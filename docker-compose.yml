@@ -1,0 +1,30 @@
+version: '3.5'
+
+networks:
+    phalcon_net:
+
+services:
+    
+    phalcon_apache:
+        image: matsnow/phalcon-php7-centos7-apache2
+        ports:
+            - '8083:80'
+            - '8443:443'
+        volumes:
+            - ./www:/var/www/html
+        networks:
+            - phalcon_net
+            
+    mysql:
+        image: tutum/mysql
+        ports:
+            - '3316:3306'
+        environment:
+            MYSQL_PASS: wordpress
+            MYSQL_USER: wordpress
+        volumes:
+            - ./mysql:/var/lib/mysql
+        networks:
+          phalcon_net:
+            aliases:
+              - mysql
