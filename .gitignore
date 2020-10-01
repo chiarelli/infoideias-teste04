@@ -4,3 +4,5 @@ nbproject/
 vendor/
 
 phalcon\.zip
+
+www/app/cache/
