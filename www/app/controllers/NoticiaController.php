@@ -20,28 +20,51 @@ class NoticiaController extends ControllerBase {
         $this->view->pick("noticia/cadastrar");
     }
 
-    public function editarAction($id) {
+    public function editarAction($id) {        
+        $noticia = Noticia::findFirst((int) $id);
+        
+        if( FALSE === $noticia ) {
+            $this->getFlash()->message('error', 'Essa Notícia não existe na base de dados.');
+            $this->view->setVar( 'noticia', new Noticia );
+            return $this->view->pick("noticia/editar");
+        }
+        
+        $this->view->setVar('noticia', $noticia);
         $this->view->pick("noticia/editar");
     }
-
-    public function salvarAction() {
-        if (false === $this->request->isPost()) {
-            // Não faz nada, sai silenciosamente
-            return;
+    
+    public function updateAction() {
+        $id = $this->request->get('id');
+        
+        if( ! $this->isUpdateRequestValid() ) {
+            return $this->response->redirect("/noticias/editar/{$id}");
         }
+        
+        $noticia = Noticia::findFirst($id);
+        
+        if( ! $noticia ) {
+            $this->getFlash()->message('error', "A notícia id #{$id} não é elegível para edição.");
+            return $this->response->redirect(array('for' => 'noticia.lista'));
+        }
+        
+        $noticia->titulo = $this->request->get('titulo');
+        $noticia->texto = $this->request->get('texto');
+        $noticia->data_ultima_atualizacao = date('Y-m-d H:i:s');        
+        
+        if ( ! $noticia->update() ) {
+            $this->getFlash()->message('error', 'Houve um erro ao editar a notícia. Por favor, tente novamente.');
+            return $this->response->redirect("/noticias/editar/{$id}");
+        }
+        $this->getFlash()->message('success', "Notícia id #{$id} editada com sucesso");
+        
+        return $this->response->redirect(array('for' => 'noticia.lista'));
+    }
 
-        $form = new NoticiaUpdateForm();
-
-        if (!$form->isValid($this->request->getPost())) {
-            $messages = $form->getMessages();
-
-            foreach ($messages as $message) {
-                $this->getFlash()->message('error', $message);
-            }
-
+    public function salvarAction() {        
+        if( ! $this->isUpdateRequestValid() ) {
             return $this->response->redirect(array('for' => 'noticia.cadastrar'));
         }
-
+        
         $date_created = date('Y-m-d H:i:s');
 
         $noticia = new Noticia(array(
@@ -59,6 +82,26 @@ class NoticiaController extends ControllerBase {
         $this->getFlash()->message('success', 'Notícia cadastrada com sucesso');
 
         return $this->response->redirect(array('for' => 'noticia.lista'));
+    }
+    
+    protected function isUpdateRequestValid() {
+        if (false === $this->request->isPost()) {
+            return false;
+        }
+
+        $form = new NoticiaUpdateForm();
+
+        if (!$form->isValid($this->request->getPost())) {
+            $messages = $form->getMessages();
+
+            foreach ($messages as $message) {
+                $this->getFlash()->message('error', $message);
+            }
+
+            return false;
+        }
+        
+        return true;
     }
 
     public function excluirAction($id) {
