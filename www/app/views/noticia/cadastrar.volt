@@ -10,6 +10,7 @@
                         &nbsp;Cadatrar Notícia
                     </div>
                     {{ form('noticias/salvar', 'method': 'post', 'enctype' : 'multipart/form-data', 'name':'cadastrar') }}
+                        {{ flash.output() }}
                         <div class="panel-body">
                             <div class="col-md-12"  id="conteudo">
                                 <div class="panel panel-default">

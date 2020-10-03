@@ -9,6 +9,7 @@
                 <div class="col-md-12" id="conteudo">
                     <!-- <div class="col-md-6 col-sm-6"> -->
                         <div class="panel panel-default">
+                            {{ flash.output() }}
                             <div class="panel-heading">
                                 <!-- <a href="#" class="pull-right">View all</a> -->
                                 <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
@@ -22,7 +23,7 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body">                                
                                 <div class="col-md-12">
                                     <a id="button-abrir-ticket" href="{{ url(['for':'noticia.cadastrar']) }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nova Noticia</a>
                                     
