@@ -57,6 +57,24 @@ class Noticia extends Model {
     public function getSource() {
         return 'noticia';
     }
+    
+    function getDateCreated($format = 'd/m/Y H:i:s') {        
+        return self::formatDate($format, $this->data_cadastro);
+    }
+    
+    function getDateModified($format = 'd/m/Y H:i:s') {        
+        return self::formatDate($format, $this->data_ultima_atualizacao);
+    }
+    
+    public static function formatDate($format, $date_string) {
+        try {
+            $date = new DateTime($date_string);
+            return $date->format($format);
+            
+        } catch (\Exception $exc) {
+            return false;
+        }
+    }
 
     /**
      * Allows to query a set of records that match the specified conditions
