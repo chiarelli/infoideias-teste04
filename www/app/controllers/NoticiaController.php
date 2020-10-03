@@ -109,6 +109,18 @@ class NoticiaController extends ControllerBase {
     }
 
     public function excluirAction($id) {
+        $noticia = Noticia::findFirst((int) $id);
+        
+        if( FALSE === $noticia ) {
+            $this->getFlash()->message('error', 'Essa Notícia não existe na base de dados.');
+        }
+        
+        if( $noticia->delete() ) {
+            $this->getFlash()->message('success', 'Notícia excluída com sucesso!');
+        } else {
+            $this->getFlash()->message('error', 'Houve um erro ao excluir a notícia. Tente novamente');            
+        }
+        
         return $this->response->redirect(array('for' => 'noticia.lista'));
     }
 
