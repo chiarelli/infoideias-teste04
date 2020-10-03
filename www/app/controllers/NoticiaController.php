@@ -9,10 +9,21 @@ class NoticiaController extends ControllerBase {
      * @var FlashSession 
      */
     private $flash;
-
-    public function listaAction() {
+    
+    /**
+     *
+     * @var ModelUtil
+     */
+    private $utility;
+    
+    public function initialize() {
+        parent::initialize();
         
-        $noticiasIt = Noticia::find();
+        $this->utility = new ModelUtil();
+    }
+
+    public function listaAction() {        
+        $noticiasIt = Noticia::find();        
         
         $this->view->setVar('noticiasIt', $noticiasIt);
         
@@ -20,7 +31,6 @@ class NoticiaController extends ControllerBase {
     }
 
     public function cadastrarAction() {
-
         $this->view->pick("noticia/cadastrar");
     }
 
@@ -32,8 +42,12 @@ class NoticiaController extends ControllerBase {
             $this->view->setVar( 'noticia', new Noticia );
             return $this->view->pick("noticia/editar");
         }
+        $categoriesIt = Category::find();
         
+        $this->view->setVar('categoriesIt', $categoriesIt);
         $this->view->setVar('noticia', $noticia);
+        $this->view->setVar('utility', $this->utility);
+        
         $this->view->pick("noticia/editar");
     }
     

@@ -33,6 +33,18 @@
                                                 <textarea class= "form-control" name="texto">{{ noticia.texto }}</textarea>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-12">
+                                                <label for ="categories">Categorias</label>
+                                                <select id="categories" name="categories[]" multiple>
+                                                    {% if categoriesIt is iterable %}
+                                                        {% for category in categoriesIt %}
+                                                            <option value="{{ category.id }}" {% if utility.searchIdInResultSet(noticia.NoticiaCategory, category.id) %} selected {% endif %} >{{ category.name }}</option>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>{#/.panel-body#}
                                 </div>{#/.panel#}
                                 <div class="row" style="text-align:right;">
