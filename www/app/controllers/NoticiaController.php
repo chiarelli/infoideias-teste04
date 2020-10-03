@@ -11,7 +11,11 @@ class NoticiaController extends ControllerBase {
     private $flash;
 
     public function listaAction() {
-
+        
+        $noticiasIt = Noticia::find();
+        
+        $this->view->setVar('noticiasIt', $noticiasIt);
+        
         $this->view->pick("noticia/listar");
     }
 
@@ -37,7 +41,7 @@ class NoticiaController extends ControllerBase {
         $id = $this->request->get('id');
         
         if( ! $this->isUpdateRequestValid() ) {
-            return $this->response->redirect("/noticias/editar/{$id}");
+            return $this->response->redirect(array('for' => 'noticia.editar', 'id' => $id));
         }
         
         $noticia = Noticia::findFirst($id);
@@ -53,7 +57,7 @@ class NoticiaController extends ControllerBase {
         
         if ( ! $noticia->update() ) {
             $this->getFlash()->message('error', 'Houve um erro ao editar a notícia. Por favor, tente novamente.');
-            return $this->response->redirect("/noticias/editar/{$id}");
+            return $this->response->redirect(array('for' => 'noticia.editar', 'id' => $id));
         }
         $this->getFlash()->message('success', "Notícia id #{$id} editada com sucesso");
         

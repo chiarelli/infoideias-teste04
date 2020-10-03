@@ -28,45 +28,31 @@
                                     <a id="button-abrir-ticket" href="{{ url(['for':'noticia.cadastrar']) }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nova Noticia</a>
                                     
                                 </div>
-								<table id="lista-noticia" class="table dataTable table-hover">
-									<thead>
-										<tr>
-											<td>Cod</td>
-											<td>Titulo</td>
-											<td>Texto</td>
-											<td>Ações</td>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-                                            <td><a href="#">#1</a></td>
-                                            <td class="titulo"> Título</td>
-                                            <td class="text-center">Texto</td>
-                                            <td>
-                                                <a href="{{ url(['for':'noticia.editar',"id":1]) }}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                <a href="{{ url(['for':'noticia.excluir',"id":1]) }}"><span class="glyphicon glyphicon-remove-sign"></span></a>
-                                            </td>
-										</tr>
+                                <table id="lista-noticia" class="table dataTable table-hover">
+                                    <thead>
                                         <tr>
-                                            <td><a href="#">#2</a></td>
-                                            <td class="titulo"> Título 2</td>
-                                            <td class="text-center">Texto 2</td>
-                                            <td>
-                                                <a href="{{ url(['for':'noticia.editar',"id":2]) }}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                <a href="{{ url(['for':'noticia.excluir',"id":2]) }}"><span class="glyphicon glyphicon-remove-sign"></span></a>
-                                            </td>
+                                            <td>Cod</td>
+                                            <td>Titulo</td>
+                                            <td>Texto</td>
+                                            <td>Ações</td>
                                         </tr>
-                                        <tr>
-                                            <td><a href="#">#3</a></td>
-                                            <td class="titulo"> Título 3</td>
-                                            <td class="text-center">Texto 3</td>
-                                            <td>
-                                                <a href="{{ url(['for':'noticia.editar',"id":3]) }}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                <a href="{{ url(['for':'noticia.excluir',"id":3]) }}"><span class="glyphicon glyphicon-remove-sign"></span></a>
-                                            </td>
-                                        </tr>
-									</tbody>
-								</table>
+                                    </thead>
+                                    <tbody>
+                                        {% if noticiasIt is iterable %}
+                                            {% for noticia in noticiasIt %}
+                                                <tr>
+                                                    <td><a href="#">#{{ noticia.id }}</a></td>
+                                                    <td class="titulo">{{ noticia.titulo }}</td>
+                                                    <td class="text-center">{{ noticia.texto }}</td>
+                                                    <td>
+                                                        <a href="{{ url(['for':'noticia.editar',"id": noticia.id ]) }}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                        <a href="{{ url(['for':'noticia.excluir',"id": noticia.id ]) }}"><span class="glyphicon glyphicon-remove-sign"></span></a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
                             </div><!-- panel-body -->
                         </div>
                 </div>
