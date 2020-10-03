@@ -47,6 +47,14 @@ class Noticia extends Model {
      */
     public function initialize() {
         $this->setSchema("phalcont_teste04");
+        $this->hasManyToMany(
+                'id', 
+                'NoticiaCategory', 
+                'noticia_id', 'category_id', 
+                'Category', 
+                'id', 
+                [ 'alias' => 'NoticiaCategory' ]
+        );
     }
 
     /**
@@ -57,21 +65,20 @@ class Noticia extends Model {
     public function getSource() {
         return 'noticia';
     }
-    
-    function getDateCreated($format = 'd/m/Y H:i:s') {        
+
+    function getDateCreated($format = 'd/m/Y H:i:s') {
         return self::formatDate($format, $this->data_cadastro);
     }
-    
-    function getDateModified($format = 'd/m/Y H:i:s') {        
+
+    function getDateModified($format = 'd/m/Y H:i:s') {
         return self::formatDate($format, $this->data_ultima_atualizacao);
     }
-    
+
     public static function formatDate($format, $date_string) {
         try {
             $date = new DateTime($date_string);
             return $date->format($format);
-            
-        } catch (\Exception $exc) {
+        } catch (Exception $exc) {
             return false;
         }
     }
