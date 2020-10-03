@@ -19,6 +19,7 @@ $router->add("/noticias/cadastrar",              array("controller" => "Noticia"
 $router->addGet("/noticias/editar/{id:[0-9]*}",  array("controller" => "Noticia",  "action"          => "editar"))->setName('noticia.editar');
 $router->add("/noticias/editar",                 array("controller" => "Noticia",  "action"          => "editar"))->setName('noticia.editar');
 $router->addPost("/noticias/salvar",             array("controller" => "Noticia", "action"           => "salvar"))->setName('noticia.salvar');
+$router->addPost("/noticias/update",             array("controller" => "Noticia",  "action"   => "update"))->setName('noticia.update');
 $router->addGet("/noticias/excluir/{id:[0-9]*}",  array("controller" => "Noticia",  "action"          => "excluir"))->setName('noticia.excluir');
 
 
