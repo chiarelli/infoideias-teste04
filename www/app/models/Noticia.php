@@ -41,6 +41,13 @@ class Noticia extends Model {
      * @Column(type="string", nullable=true)
      */
     public $data_cadastro;
+    
+    /**
+     *
+     * @var string
+     * @Column(type="string", nullable=true)
+     */
+    public $data_publicacao;
 
     /**
      * Initialize method for model.

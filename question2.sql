@@ -1,3 +1,6 @@
+ALTER TABLE `phalcont_teste04`.`noticia`
+    ADD data_publicacao DATETIME;
+
 CREATE TABLE `phalcont_teste04`.`category` (
   `id` INT(10) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
