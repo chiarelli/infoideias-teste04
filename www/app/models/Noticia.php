@@ -85,13 +85,11 @@ class Noticia extends Model {
         return self::formatDate($format, $this->data_publicacao);
     }
 
-    public static function formatDate($format, $date_string) {
-        try {
-            $date = new DateTime($date_string);
+    public static function formatDate($format, $date) {
+        if( $date = DateTime::createFromFormat('Y-m-d H:i:s', $date) ) {
             return $date->format($format);
-        } catch (Exception $exc) {
-            return false;
-        }
+        }        
+        return FALSE;
     }
 
     /**
