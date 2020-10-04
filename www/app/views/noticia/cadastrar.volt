@@ -27,6 +27,18 @@
                                                 {{ text_area("texto", "class": 'form-control tinymce-editor') }}
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-12">
+                                                <label for ="categories">Categorias</label>
+                                                <select id="categories" name="categories[]" multiple>
+                                                    {% if categoriesIt is iterable %}
+                                                        {% for category in categoriesIt %}
+                                                            <option value="{{ category.id }}">{{ category.name }}</option>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>{#/.panel-body#}
                                 </div>{#/.panel#}
                                 <div class="row" style="text-align:right;">
