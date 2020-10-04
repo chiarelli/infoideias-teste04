@@ -11,3 +11,23 @@ $('#btnToggle').click(function(){
   }
 });
 });
+
+jQuery(document).ready(function ($) {
+    
+    var $row       = $("#publication_date_row")
+      , $checkboxe = $("#publicar")
+    ;
+    
+    function checked() {
+        if(this.checked) {
+            return $row.show();
+        }        
+        $row.hide();
+    }
+    
+    $checkboxe.change(checked);
+    
+    $checkboxe.get(0) 
+        ? checked.apply($checkboxe.get(0)) 
+        : $row.show();
+});

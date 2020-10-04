@@ -17,6 +17,17 @@
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="form-group col-sm-12">
+                                                <label for ="publicar">
+                                                    Publicar? <input type="checkbox" id="publicar" class="form-control">
+                                                </label>
+                                            </div>
+                                            <div id="publication_date_row" class="form-group col-sm-12" style="display: none;">
+                                                <label for ="publication_date">Data Para a publicação</label>
+                                                <input type="datetime-local" id="publication_date" name="publication_date" class="form-control" style="width: 100%;">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-12">
                                                 <label for ="Titulo">Título <span class="error">(*)<span></label>
                                                 {{ text_field("titulo", "width": '100%', "class": 'form-control') }}
                                             </div>
@@ -30,7 +41,7 @@
                                         <div class="row">
                                             <div class="form-group col-sm-12">
                                                 <label for ="categories">Categorias</label>
-                                                <select id="categories" name="categories[]" multiple>
+                                                <select id="categories" name="categories[]" class="form-control" style="width: 100%;" multiple>
                                                     {% if categoriesIt is iterable %}
                                                         {% for category in categoriesIt %}
                                                             <option value="{{ category.id }}">{{ category.name }}</option>

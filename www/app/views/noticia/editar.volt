@@ -19,7 +19,23 @@
                                             <div class="form-group col-sm-12">
                                                 <p><strong>Data de Criação:</strong> {{ noticia.getDateCreated() }}</p>
                                                 <p><strong>Data da Última Atualização:</strong> {{ noticia.getDateModified() }}</p>
+                                                {% if noticia.data_publicacao %} 
+                                                    <p><strong>Data Para a publicação:</strong> {{ noticia.getDatePublication() }}</p>
+                                                {% endif %}
                                             </div>
+                                            
+                                            {% if noticia.data_publicacao %} {% else %}
+                                                <div class="form-group col-sm-12">
+                                                    <label for ="publicar">
+                                                        Publicar? <input type="checkbox" id="publicar" class="form-control">
+                                                    </label>
+                                                </div>
+                                                <div id="publication_date_row" class="form-group col-sm-12" style="display: none;">
+                                                    <label for ="publication_date">Data Para a publicação</label>
+                                                    <input type="datetime-local" id="publication_date" name="publication_date" class="form-control" style="width: 100%;">
+                                                </div>
+                                            {% endif %}                                            
+                                            
                                         </div>
                                         <div class="row">
                                             <div class="form-group col-sm-12">
@@ -36,7 +52,7 @@
                                         <div class="row">
                                             <div class="form-group col-sm-12">
                                                 <label for ="categories">Categorias</label>
-                                                <select id="categories" name="categories[]" multiple>
+                                                <select id="categories" name="categories[]" class="form-control" style="width: 100%;" multiple>
                                                     {% if categoriesIt is iterable %}
                                                         {% for category in categoriesIt %}
                                                             <option value="{{ category.id }}" {% if utility.searchIdInResultSet(noticia.NoticiaCategory, category.id) %} selected {% endif %} >{{ category.name }}</option>
