@@ -76,6 +76,8 @@ class NoticiaController extends ControllerBase {
         $categories = $this->request->get('categories');
         $cat_ids = is_array( $categories ) ? $categories : [];
         
+        self::insertPublicationDate($noticia, $this->request->get('publication_date') );
+        
         // Start a transaction
         $this->db->begin();
         
@@ -109,6 +111,8 @@ class NoticiaController extends ControllerBase {
             'data_cadastro' => $date_created,
             'data_ultima_atualizacao' => $date_created,
         ));
+        
+        self::insertPublicationDate($noticia, $this->request->get('publication_date') );
         
         $categories = $this->request->get('categories');
         $cat_ids = is_array( $categories ) ? $categories : [];
@@ -189,6 +193,14 @@ class NoticiaController extends ControllerBase {
         return $this->flash = $this->flash ?: new FlashSession();
     }
     
+    static function insertPublicationDate(Noticia $noticia, $date) {        
+        try {
+            $noticia->data_publicacao = (new DateTime($date))->format('Y-m-d H:i:s');
+        } catch (\Exception $exc) {                
+        }
+    }
+
+
     static function saveCategoriesInModel(Noticia $noticia, array $cat_ids) {        
         self::cleanCategoriesOfModel($noticia);
         

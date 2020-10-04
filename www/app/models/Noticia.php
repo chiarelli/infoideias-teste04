@@ -80,6 +80,10 @@ class Noticia extends Model {
     function getDateModified($format = 'd/m/Y H:i:s') {
         return self::formatDate($format, $this->data_ultima_atualizacao);
     }
+    
+    function getDatePublication($format = 'd/m/Y H:i:s') {
+        return self::formatDate($format, $this->data_publicacao);
+    }
 
     public static function formatDate($format, $date_string) {
         try {
