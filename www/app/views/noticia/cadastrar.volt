@@ -18,7 +18,7 @@
                                         <div class="row">
                                             <div class="form-group col-sm-12">
                                                 <label for ="publicar">
-                                                    Publicar? <input type="checkbox" id="publicar" class="form-control">
+                                                    Publicar? <input type="checkbox" id="publicar" name="publicar" class="form-control">
                                                 </label>
                                             </div>
                                             <div id="publication_date_row" class="form-group col-sm-12" style="display: none;">

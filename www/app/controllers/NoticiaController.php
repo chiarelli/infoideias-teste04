@@ -76,7 +76,8 @@ class NoticiaController extends ControllerBase {
         $categories = $this->request->get('categories');
         $cat_ids = is_array( $categories ) ? $categories : [];
         
-        self::insertPublicationDate($noticia, $this->request->get('publication_date') );
+        if( $this->request->get('publicar') == 'on' )
+            self::insertPublicationDate($noticia, $this->request->get('publication_date') );
         
         // Start a transaction
         $this->db->begin();
@@ -112,7 +113,8 @@ class NoticiaController extends ControllerBase {
             'data_ultima_atualizacao' => $date_created,
         ));
         
-        self::insertPublicationDate($noticia, $this->request->get('publication_date') );
+        if( $this->request->get('publicar') == 'on' )
+            self::insertPublicationDate($noticia, $this->request->get('publication_date') );
         
         $categories = $this->request->get('categories');
         $cat_ids = is_array( $categories ) ? $categories : [];
@@ -193,11 +195,12 @@ class NoticiaController extends ControllerBase {
         return $this->flash = $this->flash ?: new FlashSession();
     }
     
-    static function insertPublicationDate(Noticia $noticia, $date) {        
-        try {
-            $noticia->data_publicacao = (new DateTime($date))->format('Y-m-d H:i:s');
-        } catch (\Exception $exc) {                
+    static function insertPublicationDate(Noticia $noticia, $date) {
+        if( ! ($date = DateTime::createFromFormat('Y-m-d\TH:i', $date)) ) {
+            return FALSE;
         }
+        $noticia->data_publicacao = $date->format('Y-m-d H:i:s');
+        return TRUE;
     }
 
 
