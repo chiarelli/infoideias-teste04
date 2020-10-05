@@ -16,14 +16,21 @@ class NoticiaController extends ControllerBase {
      */
     private $utility;
     
+    /**
+     *
+     * @var NoticiaBO
+     */
+    private $noticiaBO;
+    
     public function initialize() {
         parent::initialize();
         
-        $this->utility = new ModelUtil();
+        $this->utility   = new ModelUtil();
+        $this->noticiaBO = new NoticiaBO($this);
     }
 
     public function listaAction() {        
-        $noticiasIt = Noticia::find();        
+        $noticiasIt = $this->noticiaBO->find();
         
         $this->view->setVar('noticiasIt', $noticiasIt);
         
@@ -39,7 +46,7 @@ class NoticiaController extends ControllerBase {
     }
 
     public function editarAction($id) {        
-        $noticia = Noticia::findFirst((int) $id);
+        $noticia = $this->noticiaBO->get($id);
         
         if( FALSE === $noticia ) {
             $this->getFlash()->message('error', 'Essa Notícia não existe na base de dados.');
@@ -58,133 +65,63 @@ class NoticiaController extends ControllerBase {
     public function updateAction() {
         $id = $this->request->get('id');
         
-        if( ! $this->isUpdateRequestValid() ) {
+        if( false === $this->request->isPost() ) {
             return $this->response->redirect(array('for' => 'noticia.editar', 'id' => $id));
         }
         
-        $noticia = Noticia::findFirst($id);
-        
-        if( ! $noticia ) {
-            $this->getFlash()->message('error', "A notícia id #{$id} não é elegível para edição.");
+        try {
+            $this->noticiaBO->update($id, $this->request->getPost());
+            
+            $this->getFlash()->message('success', "Notícia id #{$id} editada com sucesso");        
             return $this->response->redirect(array('for' => 'noticia.lista'));
+            
+        } catch (ModelValidException $exc) {
+            
+            foreach ($exc->getValidator()->getMessages() as $message) {
+                $this->getFlash()->message('error', $message);
+            }
+            
+        } catch (Exception $exc) {
+            $this->getFlash()->message('error', 'Houve um erro ao editar a notícia. Por favor, tente novamente.');            
         }
         
-        $noticia->titulo = $this->request->get('titulo');
-        $noticia->texto = $this->request->get('texto');
-        $noticia->data_ultima_atualizacao = date('Y-m-d H:i:s'); 
-        
-        $categories = $this->request->get('categories');
-        $cat_ids = is_array( $categories ) ? $categories : [];
-        
-        if( $this->request->get('publicar') == 'on' )
-            self::insertPublicationDate($noticia, $this->request->get('publication_date') );
-        
-        // Start a transaction
-        $this->db->begin();
-        
-        if ( ! $noticia->update() || !self::saveCategoriesInModel($noticia, $cat_ids) ) {
-            $this->getFlash()->message('error', 'Houve um erro ao editar a notícia. Por favor, tente novamente.');
-            
-            // Rollback the transaction
-            $this->db->rollback();
-            
-            return $this->response->redirect(array('for' => 'noticia.editar', 'id' => $id));
-        }
-        
-        // Commit the transaction
-        $this->db->commit();
-        
-        $this->getFlash()->message('success', "Notícia id #{$id} editada com sucesso");
-        
-        return $this->response->redirect(array('for' => 'noticia.lista'));
+        $this->response->redirect(array('for' => 'noticia.editar', 'id' => $id));
     }
 
     public function salvarAction() {        
-        if( ! $this->isUpdateRequestValid() ) {
+        if( false === $this->request->isPost() ) {
             return $this->response->redirect(array('for' => 'noticia.cadastrar'));
         }
         
-        $date_created = date('Y-m-d H:i:s');
-
-        $noticia = new Noticia(array(
-            'titulo' => $this->request->get('titulo'),
-            'texto' => $this->request->get('texto'),
-            'data_cadastro' => $date_created,
-            'data_ultima_atualizacao' => $date_created,
-        ));
-        
-        if( $this->request->get('publicar') == 'on' )
-            self::insertPublicationDate($noticia, $this->request->get('publication_date') );
-        
-        $categories = $this->request->get('categories');
-        $cat_ids = is_array( $categories ) ? $categories : [];
-        
-        // Start a transaction
-        $this->db->begin();
-
-        if ( ! $noticia->save() || ! self::saveCategoriesInModel($noticia, $cat_ids) ) {
-            $this->getFlash()->message('error', 'Houve um erro ao salvar a notícia. Por favor, tente novamente.');
+        try {
+            $this->noticiaBO->create($this->request->getPost());
             
-            // Rollback the transaction
-            $this->db->rollback();
+            $this->getFlash()->message('success', 'Notícia cadastrada com sucesso');
+            return $this->response->redirect(array('for' => 'noticia.lista'));
             
-            return $this->response->redirect(array('for' => 'noticia.cadastrar'));
-        }
-        
-        // Commit the transaction
-        $this->db->commit();
-
-        $this->getFlash()->message('success', 'Notícia cadastrada com sucesso');
-
-        return $this->response->redirect(array('for' => 'noticia.lista'));
-    }
-    
-    protected function isUpdateRequestValid() {
-        if (false === $this->request->isPost()) {
-            return false;
-        }
-
-        $form = new NoticiaUpdateForm();
-
-        if (!$form->isValid($this->request->getPost())) {
-            $messages = $form->getMessages();
-
-            foreach ($messages as $message) {
+        } catch (ModelValidException $exc) {
+            
+            foreach ($exc->getValidator()->getMessages() as $message) {
                 $this->getFlash()->message('error', $message);
             }
-
-            return false;
+            
+        } catch (Exception $exc) {
+            $this->getFlash()->message('error', 'Houve um erro ao salvar a notícia. Por favor, tente novamente.');
         }
         
-        return true;
+        $this->response->redirect(array('for' => 'noticia.cadastrar'));
     }
 
     public function excluirAction($id) {
-        $noticia = Noticia::findFirst((int) $id);
         
-        if( FALSE === $noticia ) {
-            $this->getFlash()->message('error', 'Essa Notícia não existe na base de dados.');
-            return $this->response->redirect(array('for' => 'noticia.lista'));
-        }        
-        
-        // Start a transaction
-        $this->db->begin();
-        
-        self::cleanCategoriesOfModel($noticia);
-        
-        if( $noticia->delete() ) {
+        try {            
+            $this->noticiaBO->delete($id);
             $this->getFlash()->message('success', 'Notícia excluída com sucesso!');
-            
-            // Commit the transaction
-            $this->db->commit();
-        } else {
+        } catch (Exception $exc) {
             $this->getFlash()->message('error', 'Houve um erro ao excluir a notícia. Tente novamente');
-            
-            // Rollback the transaction
-            $this->db->rollback();
-        }        
+        }
         
-        return $this->response->redirect(array('for' => 'noticia.lista'));
+        $this->response->redirect(array('for' => 'noticia.lista'));
     }
 
     /**
@@ -193,48 +130,6 @@ class NoticiaController extends ControllerBase {
      */
     protected function getFlash() {
         return $this->flash = $this->flash ?: new FlashSession();
-    }
-    
-    static function insertPublicationDate(Noticia $noticia, $date) {
-        if( $date = DateTime::createFromFormat('Y-m-d\TH:i', $date) ) {
-            $noticia->data_publicacao = $date->format('Y-m-d H:i:s');
-            return TRUE;
-        }
-        return FALSE;
-    }
-
-
-    static function saveCategoriesInModel(Noticia $noticia, array $cat_ids) {        
-        self::cleanCategoriesOfModel($noticia);
-        
-        foreach ($cat_ids as $id) {
-            /* @var $category Category */
-            if( ! ($category = Category::findFirst($id)) )
-                continue;
-            
-            $relationship = new NoticiaCategory(array(
-                'noticia_id'  => $noticia->id,
-                'category_id' => $category->id,
-            ));
-            
-            if( ! $relationship->save() ) {
-                return false;
-            }
-            
-        }
-        
-        return true;
-    }
-    
-    static function cleanCategoriesOfModel(Noticia $noticia) {
-        $relationship = NoticiaCategory::find( "noticia_id= {$noticia->id}" );
-
-        $relationship->rewind();        
-        while ( $relationship->valid() ) {
-            $relationship->current()->delete();
-            
-            $relationship->next();
-        }        
     }
 
 }
