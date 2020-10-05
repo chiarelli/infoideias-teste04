@@ -1,7 +1,7 @@
 <?php
 
 use NoticiaUpdateForm as NoticiaValidator;
-use Phalcon\Mvc\ControllerInterface as PhalconCore;
+use Phalcon\Di as Container;
 use Phalcon\Mvc\Model\Resultset;
 
 /**
@@ -13,12 +13,16 @@ class NoticiaBO {
     
     /**
      *
-     * @var PhalconCore
+     * @var Container
      */
-    protected $phalcon;
+    protected $container;
     
-    public function __construct(PhalconCore $phalcon) {
-        $this->phalcon = $phalcon;
+    public function __construct(Container $container) {
+        $this->container = $container;
+    }
+    
+    public function __get($name) {
+        return $this->container->get($name);
     }
     
     public function get($id) {
@@ -69,19 +73,19 @@ class NoticiaBO {
         }        
         
         // Start a transaction
-         $this->phalcon->db->begin();
+         $this->db->begin();
         
         self::cleanCategoriesOfModel($noticia);
         
         if( ! $noticia->delete() ) {            
             // Rollback the transaction
-             $this->phalcon->db->rollback();
+             $this->db->rollback();
              
              throw new Exception();
         }        
         
         // Commit the transaction
-        $this->phalcon->db->commit();
+        $this->db->commit();
     }
     
     protected function save($noticia, $data) {        
@@ -98,16 +102,16 @@ class NoticiaBO {
         
         
         // Start a transaction
-        $this->phalcon->db->begin();
+        $this->db->begin();
 
         if ( ! $noticia->save() || ! self::saveCategoriesInModel($noticia, $cat_ids) ) {
             // Rollback the transaction
-            $this->phalcon->db->rollback();            
+            $this->db->rollback();            
             throw new Exception();
         }
         
         // Commit the transaction
-        $this->phalcon->db->commit();
+        $this->db->commit();
     }
     
     static function insertPublicationDate(Noticia $noticia, $date) {

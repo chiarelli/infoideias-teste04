@@ -26,7 +26,7 @@ class NoticiaController extends ControllerBase {
         parent::initialize();
         
         $this->utility   = new ModelUtil();
-        $this->noticiaBO = new NoticiaBO($this);
+        $this->noticiaBO = new NoticiaBO( $this->getDI() );
     }
 
     public function listaAction() {        
