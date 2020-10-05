@@ -196,11 +196,11 @@ class NoticiaController extends ControllerBase {
     }
     
     static function insertPublicationDate(Noticia $noticia, $date) {
-        if( ! ($date = DateTime::createFromFormat('Y-m-d\TH:i', $date)) ) {
-            return FALSE;
+        if( $date = DateTime::createFromFormat('Y-m-d\TH:i', $date) ) {
+            $noticia->data_publicacao = $date->format('Y-m-d H:i:s');
+            return TRUE;
         }
-        $noticia->data_publicacao = $date->format('Y-m-d H:i:s');
-        return TRUE;
+        return FALSE;
     }
 
 
