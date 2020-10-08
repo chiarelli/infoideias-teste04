@@ -15,6 +15,7 @@ $router->add("/usuario/editar",                 array("controller" => "usuario",
 
 $router->add("/", array( "controller" => "Index", "action"     => "index"))->setName('index.index');
 $router->add("/noticias",                        array("controller" => "Noticia", "action"          => "lista"))->setName('noticia.lista');
+$router->add("/ajax/noticas",                    array("controller" => "Noticia", "action"          => "listarAjax"))->setName('ajax.noticia.listar');
 $router->add("/noticias/cadastrar",              array("controller" => "Noticia", "action"           => "cadastrar"))->setName('noticia.cadastrar');
 $router->addGet("/noticias/editar/{id:[0-9]*}",  array("controller" => "Noticia",  "action"          => "editar"))->setName('noticia.editar');
 $router->add("/noticias/editar",                 array("controller" => "Noticia",  "action"          => "editar"))->setName('noticia.editar');

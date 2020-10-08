@@ -30,11 +30,25 @@ class NoticiaController extends ControllerBase {
     }
 
     public function listaAction() {        
-        $noticiasIt = $this->noticiaBO->find();
+        $noticiasIt = $this->noticiaBO->find();        
         
         $this->view->setVar('noticiasIt', $noticiasIt);
         
         $this->view->pick("noticia/listar");
+    }
+    
+    public function listarAjaxAction() {      
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->view->disable();
+        
+        if ( ! $this->request->isPost()) {
+            $this->response->setStatusCode(400);  
+            return;
+        }
+        
+        $noticiasIt = $this->noticiaBO->find();
+        
+        echo json_encode($noticiasIt->toArray());        
     }
 
     public function cadastrarAction() {
