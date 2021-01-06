@@ -4,6 +4,7 @@ use Phalcon\Db\Column;
 use Phalcon\Mvc\Model;
 
 class Noticia extends Model {
+    use NoticiaTrait;
 
     /**
      *
@@ -71,26 +72,7 @@ class Noticia extends Model {
      */
     public function getSource() {
         return 'noticia';
-    }
-
-    function getDateCreated($format = 'd/m/Y H:i:s') {
-        return self::formatDate($format, $this->data_cadastro);
-    }
-
-    function getDateModified($format = 'd/m/Y H:i:s') {
-        return self::formatDate($format, $this->data_ultima_atualizacao);
-    }
-    
-    function getDatePublication($format = 'd/m/Y H:i:s') {
-        return self::formatDate($format, $this->data_publicacao);
-    }
-
-    public static function formatDate($format, $date) {
-        if( $date = DateTime::createFromFormat('Y-m-d H:i:s', $date) ) {
-            return $date->format($format);
-        }        
-        return FALSE;
-    }
+    }    
 
     /**
      * Allows to query a set of records that match the specified conditions

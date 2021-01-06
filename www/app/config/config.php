@@ -21,6 +21,8 @@ return new \Phalcon\Config(array(
         'libraryDir'     => APP_PATH . '/app/library/',
         'cacheDir'       => APP_PATH . '/app/cache/',
         'utilDir'       => APP_PATH . '/app/util/',
+        'bosDir'       => APP_PATH . '/app/businessObjects/',
+        'exceptionsDir'       => APP_PATH . '/app/exceptions/',
         'baseUri'        => '/',
     )
 ));

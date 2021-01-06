@@ -5,7 +5,7 @@
     {% endblock %}
 
     {% block content %}
-            <div class="row">
+            <div class="row" ng-app="myApp">
                 <div class="col-md-12" id="conteudo">
                     <!-- <div class="col-md-6 col-sm-6"> -->
                         <div class="panel panel-default">
@@ -23,7 +23,7 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="panel-body">                                
+                            <div class="panel-body" ng-controller="NoticaController">                                
                                 <div class="col-md-12">
                                     <a id="button-abrir-ticket" href="{{ url(['for':'noticia.cadastrar']) }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nova Noticia</a>
                                     
@@ -38,19 +38,15 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% if noticiasIt is iterable %}
-                                            {% for noticia in noticiasIt %}
-                                                <tr>
-                                                    <td><a href="#">#{{ noticia.id }}</a></td>
-                                                    <td class="titulo">{{ noticia.titulo }}</td>
-                                                    <td class="text-center">{{ noticia.texto }}</td>
-                                                    <td>
-                                                        <a href="{{ url(['for':'noticia.editar',"id": noticia.id ]) }}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                        <a href="{{ url(['for':'noticia.excluir',"id": noticia.id ]) }}"><span class="glyphicon glyphicon-remove-sign"></span></a>
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                        {% endif %}
+                                        <tr ng-repeat="noticia in noticias">
+                                            <td><a href="#">#{{ '{{ noticia.id }}' }}</a></td>
+                                            <td class="titulo">{{ '{{ noticia.titulo}}' }}</td>
+                                            <td class="text-center">{{ '{{ noticia.texto }}' }}</td>
+                                            <td>
+                                                <a href="{{ url(['for':'noticia.editar']) }}{{ '{{ noticia.id }}' }}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                <a href="{{ url(['for':'noticia.excluir']) }}{{ '{{ noticia.id }}' }}"><span class="glyphicon glyphicon-remove-sign"></span></a>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div><!-- panel-body -->
@@ -62,14 +58,20 @@
 
     {%  block extrafooter %}
         
+    <script src="{{ static_url("//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js") }}"></script>        
 
-        <script>
-
-            $(document).ready(function(){
-
+    <script>
+        const app = angular.module('myApp',[]);
                 
-            });
-        </script>
+        app.controller('NoticaController', function($scope, $http){
+
+            $http.post("{{ url(['for':'ajax.noticia.listar']) }}")
+                .then(function(response) {
+                    $scope.noticias = response.data;
+                });
+
+        });
+    </script>
 
 
     {% endblock %}
